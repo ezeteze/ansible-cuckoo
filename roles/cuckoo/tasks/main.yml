@@ -1,0 +1,47 @@
+---
+
+- name: Install requirements from apt
+  apt: pkg={{ item }} state=latest
+  with_items: apt_requirements
+  sudo: yes
+
+- name: Install requirements from pip
+  pip: name={{ item }}
+  with_items: pip_requirements
+  sudo: yes
+
+- name: Do the thing
+  script: ../files/thing.sh
+  sudo: yes
+
+- name: Install yara v3.3.0
+  script: ../files/yara.sh
+  sudo: yes 
+
+- name: Install volatility 
+  script: ../files/volatility.sh
+  sudo: yes
+
+- name: Create cuckoo group
+  group: name=cuckoo
+  sudo: yes
+
+- name: Create cuckoo user
+  user: name=cuckoo groups=cuckoo,vboxusers
+  sudo: yes
+
+- name: Download cuckoo 1.2
+  get_url: url=https://github.com/cuckoobox/cuckoo/archive/1.2.tar.gz dest=/tmp mode=0440
+  sudo: yes
+
+- name: Extract cuckoo
+  unarchive: src=/tmp/1.2.tar.gz dest=/home/cuckoo copy=no
+  sudo: yes
+
+- name: Proper permissions
+  file: path=/home/cuckoo/cuckoo state=directory owner=cuckoo group=cuckoo
+  sudo: yes
+
+- name: make application directory be owned by application user
+  file: path={{ cuckoo_deploy_to }} state=directory recurse=yes owner={{ cuckoo_user }}
+  sudo: yes

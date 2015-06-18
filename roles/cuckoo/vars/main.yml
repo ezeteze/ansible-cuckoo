@@ -1,0 +1,53 @@
+---
+apt_requirements:
+    - git 
+    - curl
+    - python-django
+    - libxml2-dev
+    - libxslt1-dev
+    - libpq-dev
+    - python-pip
+    - python-dev
+    - libfuzzy-dev
+    - tcpdump
+    - libcap2-bin
+    - wget
+    - dnsmasq
+    - python
+    - mongodb
+    - python-bson
+    - libmagic-dev
+    - build-essential
+    - libreadline-gplv2-dev
+    - libjpeg8-dev
+    - zlib1g
+    - zlib1g-dev 
+    - libgdbm-dev
+    - libc6-dev
+    - libbz2-dev
+    - libfreetype6-dev
+    - libtool
+    - automake 
+    - libjansson-dev
+    - libfuzzy-dev
+    - libffi-dev
+
+pip_requirements: 
+    - django
+    - django-ratelimit
+    - dnspython
+    - jinja2
+    - sqlalchemy
+    - magic
+    - pymongo
+    - gridfs
+    - libvirt
+    - bottle
+    - pefile
+    - chardet
+    - pydeep
+    - pygal
+    - vmcloak
+    - distorm3
+    
+
