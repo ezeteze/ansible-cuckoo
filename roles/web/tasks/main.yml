@@ -1,20 +1,28 @@
 ---
 
-- name: Install Nginx
-  apt: name=nginx update_cache=yes state=installed
-  tags: packages
-
-- name: Copy the Nginx configuration file
-  copy: src=cuckoo_web.conf dest=/etc/nginx/sites-available/ owner=root group=root mode=0644
-
-- name: Ensure that the default site is disabled
-  command: rm /etc/nginx/sites-enabled/default
-           removes=/etc/nginx/sites-enabled/default
-
-- name: Ensure that the application site is enabled
-  command: ln -s /etc/nginx/sites-available/cuckoo_web.conf
-           /etc/nginx/sites-enabled/cuckoo_web.conf
-           creates=/etc/nginx/sites-enabled/cuckoo_web.conf
+- name: Add nginx apt key
+  apt_key:
+    url='http://nginx.org/keys/nginx_signing.key'
+  sudo: yes
+  
+- name: Add nginx apt repo
+  apt_repository:
+    repo="deb http://nginx.org/packages/{{ ansible_lsb.id|lower }}/ {{ ansible_lsb.codename }} nginx"
+    update_cache=yes
+  sudo: yes
+  
+- name: Install Nginx apt package
+  apt: pkg=nginx state=latest
+  sudo: yes
+  
+- name: Disable default servers
+  file:
+    path=/etc/nginx/conf.d/{{ item.path }}
+    state=absent
+  with_items:
+    - { path: 'default.conf' }
+    - { path: 'example_ssl.conf' }
+  sudo: yes
 
 - name: Copy gunincorn configuration file
   copy: src=gunicorn_start.sh dest=/home/cuckoo/cuckoo-1.2/web/ owner=cuckoo group=cuckoo mode=0755
@@ -23,5 +31,9 @@
   copy: src=cuckoo_super.conf dest=/etc/supervisor/conf.d/ owner=root group=root mode=0644
   notify: Restart supervisor
 
-- name: Restart nginx
+ - name: Copy the Nginx configuration file
+  copy: src=cuckoo_web.conf dest=/etc/nginx/sites-available/ owner=root group=root mode=0644
+
+- name: Ensure that the application site is enabled
+  command: ln -s /etc/nginx/sites-available/cuckoo_web.conf /etc/nginx/sites-enabled/cuckoo_web.conf creates=/etc/nginx/sites-enabled/cuckoo_web.conf
   notify: restart nginx
