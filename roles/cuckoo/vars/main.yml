@@ -31,6 +31,10 @@ apt_requirements:
     - libjansson-dev
     - libfuzzy-dev
     - libffi-dev
+    - python-magic
+    - python-gridfs
+    - python-libvirt
+    - supervisor
 
 pip_requirements: 
     - django
@@ -38,10 +42,7 @@ pip_requirements:
     - dnspython
     - jinja2
     - sqlalchemy
-    - magic
     - pymongo
-    - gridfs
-    - libvirt
     - bottle
     - pefile
     - chardet
@@ -49,5 +50,12 @@ pip_requirements:
     - pygal
     - vmcloak
     - distorm3
-    
+    - nose
+    - gunicorn
 
+conf_files:
+   - cuckoo.conf
+   - memory.conf
+   - virtualbox.conf
+   - reporting.conf
+   - winxp3.conf

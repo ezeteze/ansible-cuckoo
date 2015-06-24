@@ -11,15 +11,15 @@
   sudo: yes
 
 - name: Do the thing
-  script: ../files/thing.sh
+  script: thing.sh
   sudo: yes
 
 - name: Install yara v3.3.0
-  script: ../files/yara.sh
+  script: yara.sh
   sudo: yes 
 
 - name: Install volatility 
-  script: ../files/volatility.sh
+  script: volatility.sh
   sudo: yes
 
 - name: Create cuckoo group
@@ -35,13 +35,16 @@
   sudo: yes
 
 - name: Extract cuckoo
-  unarchive: src=/tmp/1.2.tar.gz dest=/home/cuckoo copy=no
+  unarchive: src=/tmp/cuckoo-1.2.tar.gz dest=/home/cuckoo copy=no
   sudo: yes
 
-- name: Proper permissions
-  file: path=/home/cuckoo/cuckoo state=directory owner=cuckoo group=cuckoo
-  sudo: yes
+- name: Copy configuration
+  copy: src={{ item }} dest=/home/cuckoo/cuckoo-1.2/conf/{{ item }} owner=cuckoo group=cuckoo mode=0644
+  with_items: conf_files
 
-- name: make application directory be owned by application user
-  file: path={{ cuckoo_deploy_to }} state=directory recurse=yes owner={{ cuckoo_user }}
+- name: Copy cuckoo start script to /usr/local/bin
+  copy: src=cuckoo dest=/usr/local/bin/ owner=root group=root mode=0755
+
+- name: Give proper permissions
+  file: path=/home/cuckoo/cuckoo-1.2 state=directory recurse=yes owner=cuckoo group=cuckoo
   sudo: yes

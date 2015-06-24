@@ -1,1 +1,1 @@
-WIP
+Ansible playbook to install cuckoo sandbox.

@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# capture CTRL+C, CTRL+Z and quit singles using the trap
+trap '' SIGINT
+trap '' SIGQUIT
+trap '' SIGTSTP
+
+# display message and pause
+pause(){
+        local m="$@"
+        echo "$m"
+        read -p "Press [Enter] key to continue..." key
+}
+# Start cuckoo
+startck(){
+        createvm
+        pkill -f manage.py
+        pkill -f cuckoo.py
+        vboxmanage list hostonlyifs
+        sudo ifconfig vboxnet0 up
+        sudo ifconfig vboxnet0 192.168.57.1 netmask 255.255.255.0 broadcast 192.168.57.1
+        sudo service dnsmasq restart
+        cd /home/cuckoo/cuckoo-1.2
+        ./cuckoo.py &
+        cd web
+        ./manage.py runserver 0.0.0.0:8000 &
+        sudo iptables -A FORWARD -o eth0 -i vboxnet0 -s 192.168.57.0/24 -m conntrack --ctstate NEW -j ACCEPT
+        sudo iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+        sudo iptables -A POSTROUTING -t nat -j MASQUERADE
+        sudo sysctl -w net.ipv4.ip_forward=1
+}
+
+createvm(){
+        vmexists=$(vboxmanage list vms | grep -ic "winxp")
+        if [ $vmexists -eq 1 ]
+          then
+                echo "Powering on.."
+          else
+		echo "Since this is the first run, will now create the VM.."
+                mkdir /mnt/winxp
+                sudo mount -o loop,ro /opt/winxp3.iso /mnt/winxp
+                mkdir /home/cuckoo/vms
+                mkdir /home/cuckoo/vm-data
+                vmcloak -s /home/cuckoo/cuckoo-1.2/conf/winxp3.conf --winxp winxp
+        fi
+}
+
+
+case "$1" in
+    start) startck ;;
+        stop)
+            pkill -f manage.py
+            pkill -f cuckoo.py
+            ;;
+        restart)
+            pkill -f manage.py
+            pkill -f cuckoo.py
+		    startck
+            ;;
+        clean)
+            /home/cuckoo/cuckoo-1.2/cuckoo.py --clean ;;
+        *) echo $"Usage: $0 {start|stop|restart|clean}"
+           exit 1
+esac
