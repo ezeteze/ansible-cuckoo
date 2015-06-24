@@ -27,13 +27,11 @@
 - name: Copy gunincorn configuration file
   copy: src=gunicorn_start.sh dest=/home/cuckoo/cuckoo-1.2/web/ owner=cuckoo group=cuckoo mode=0755
 
-- name: Autostart guinicorn.
+- name: Copy supervisor configuration.
   copy: src=cuckoo_super.conf dest=/etc/supervisor/conf.d/ owner=root group=root mode=0644
-  notify: Restart supervisor
+
+- name: Restart supervisor.
+  service: name=supervisor enabled=yes state=restarted  
 
 - name: Copy the Nginx configuration file
-  copy: src=cuckoo_web.conf dest=/etc/nginx/sites-available/ owner=root group=root mode=0644
-
-- name: Ensure that the application site is enabled
-  command: ln -s /etc/nginx/sites-available/cuckoo_web.conf /etc/nginx/sites-enabled/cuckoo_web.conf creates=/etc/nginx/sites-enabled/cuckoo_web.conf
-  notify: restart nginx
+  copy: src=cuckoo_web.conf dest=/etc/nginx/conf.d/ owner=root group=root mode=0644

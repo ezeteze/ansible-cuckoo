@@ -6,5 +6,5 @@
 - name: reload nginx
   service: name=nginx state=reloaded
 
-- name: Restart supervisor
+- name: restart supervisor
   service: name=supervisor enabled=yes state=restarted
