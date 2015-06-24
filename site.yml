@@ -1,0 +1,11 @@
+---
+- name: Install cuckoo
+  hosts: localhost
+  user: root
+  # remote_user: user
+  # sudo: yes
+
+  roles:
+    - virtualbox
+    - cuckoo
+    - web

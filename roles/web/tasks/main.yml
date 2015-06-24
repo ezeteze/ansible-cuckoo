@@ -1,0 +1,27 @@
+---
+
+- name: Install Nginx
+  apt: name=nginx update_cache=yes state=installed
+  tags: packages
+
+- name: Copy the Nginx configuration file
+  copy: src=cuckoo_web.conf dest=/etc/nginx/sites-available/ owner=root group=root mode=0644
+
+- name: Ensure that the default site is disabled
+  command: rm /etc/nginx/sites-enabled/default
+           removes=/etc/nginx/sites-enabled/default
+
+- name: Ensure that the application site is enabled
+  command: ln -s /etc/nginx/sites-available/cuckoo_web.conf
+           /etc/nginx/sites-enabled/cuckoo_web.conf
+           creates=/etc/nginx/sites-enabled/cuckoo_web.conf
+
+- name: Copy gunincorn configuration file
+  copy: src=gunicorn_start.sh dest=/home/cuckoo/cuckoo-1.2/web/ owner=cuckoo group=cuckoo mode=0755
+
+- name: Autostart guinicorn.
+  copy: src=cuckoo_super.conf dest=/etc/supervisor/conf.d/ owner=root group=root mode=0644
+  notify: Restart supervisor
+
+- name: Ensure Nginx service is started
+  service: name=nginx state=started enabled=yes
