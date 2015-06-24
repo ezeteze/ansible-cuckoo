@@ -31,7 +31,7 @@
   copy: src=cuckoo_super.conf dest=/etc/supervisor/conf.d/ owner=root group=root mode=0644
   notify: Restart supervisor
 
- - name: Copy the Nginx configuration file
+- name: Copy the Nginx configuration file
   copy: src=cuckoo_web.conf dest=/etc/nginx/sites-available/ owner=root group=root mode=0644
 
 - name: Ensure that the application site is enabled
