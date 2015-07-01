@@ -27,7 +27,7 @@
   sudo: yes
 
 - name: Create cuckoo user
-  user: name=cuckoo groups=cuckoo,vboxusers
+  user: name=cuckoo groups=cuckoo,vboxusers,sudo password=$6$fd3Ei22cWadFLS1U$uFxUvp24bSDfITbXP5EeSav4KmB.xHAxypwtIdmvb3A.2anQfsRFHmgNagINMMJmyE29FWvcvq7fgsUByJIoK/
   sudo: yes
 
 - name: Download cuckoo 1.2
