@@ -37,8 +37,8 @@ createvm(){
                 echo "Powering on.."
           else
 		echo "Since this is the first run, will now create the VM.."
-                mkdir /mnt/winxp
-                sudo mount -o loop,ro /opt/winxp3.iso /mnt/winxp
+                sudo mkdir /mnt/winxp
+                sudo mount -o loop,ro /home/cuckoo/winxp3.iso /mnt/winxp
                 mkdir /home/cuckoo/vms
                 mkdir /home/cuckoo/vm-data
                 vmcloak -s /home/cuckoo/cuckoo-1.2/conf/winxp3.conf --winxp winxp
