@@ -42,7 +42,7 @@ pip_requirements:
     - django-ratelimit
     - dnspython
     - jinja2
-    - sqlalchemy
+    - sqlalchemy==0.9.9
     - pymongo
     - bottle
     - pefile
