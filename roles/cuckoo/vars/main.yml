@@ -35,6 +35,7 @@ apt_requirements:
     - python-gridfs
     - python-libvirt
     - supervisor
+	- genisoimage
 
 pip_requirements: 
     - django
