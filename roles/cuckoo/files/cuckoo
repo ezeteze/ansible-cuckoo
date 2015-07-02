@@ -22,8 +22,6 @@ startck(){
         sudo service dnsmasq restart
         cd /home/cuckoo/cuckoo-1.2
         ./cuckoo.py &
-        cd web
-        ./manage.py runserver 0.0.0.0:8000 &
         sudo iptables -A FORWARD -o eth0 -i vboxnet0 -s 192.168.57.0/24 -m conntrack --ctstate NEW -j ACCEPT
         sudo iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
         sudo iptables -A POSTROUTING -t nat -j MASQUERADE
@@ -42,7 +40,7 @@ createvm(){
                 mkdir /home/cuckoo/vms
                 mkdir /home/cuckoo/vm-data
                 sudo vboxmanage dhcpserver remove --ifname vboxnet0
-				sudo ifconfig vboxnet0 up
+                sudo ifconfig vboxnet0 up
                 vboxmanage hostonlyif ipconfig vboxnet0 --ip 192.168.57.1
                 sudo ifconfig vboxnet0 192.168.57.1 netmask 255.255.255.0 broadcast 192.168.57.1
                 vmcloak -s /home/cuckoo/cuckoo-1.2/conf/winxp3.conf --winxp winxp
