@@ -53,6 +53,7 @@ pip_requirements:
     - distorm3
     - nose
     - gunicorn
+	- dpkt
 
 conf_files:
    - cuckoo.conf
