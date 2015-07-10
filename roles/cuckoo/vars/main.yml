@@ -35,7 +35,7 @@ apt_requirements:
     - python-gridfs
     - python-libvirt
     - supervisor
-	- genisoimage
+    - genisoimage
 
 pip_requirements: 
     - django
@@ -53,7 +53,7 @@ pip_requirements:
     - distorm3
     - nose
     - gunicorn
-	- dpkt
+    - dpkt
 
 conf_files:
    - cuckoo.conf
