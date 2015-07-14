@@ -10,7 +10,7 @@
   with_items: pip_requirements
   sudo: yes
 
-- name: Do the thing
+- name: Setcap tcpdump
   script: thing.sh
   sudo: yes
 
@@ -44,6 +44,9 @@
 - name: Copy configuration
   copy: src={{ item }} dest=/home/cuckoo/cuckoo-1.2/conf/{{ item }} owner=cuckoo group=cuckoo mode=0644
   with_items: conf_files
+  
+- name: Replace network.py module with the latest and greatest
+  get_url: url=https://raw.githubusercontent.com/cuckoobox/cuckoo/master/modules/processing/network.py dest=/home/cuckoo/cuckoo-1.2/modules/ mode=0644
 
 - name: Copy cuckoo start script to /usr/local/bin
   copy: src=cuckoo dest=/usr/local/bin/ owner=root group=root mode=0755
