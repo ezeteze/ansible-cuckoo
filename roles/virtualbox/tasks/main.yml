@@ -12,5 +12,5 @@
   get_url: url=http://download.virtualbox.org/virtualbox/4.3.30/Oracle_VM_VirtualBox_Extension_Pack-4.3.30-101610.vbox-extpack dest=/tmp mode=0644
 
 - name: Install Virtualbox extpack  
-  command: vboxmanage extpack install /tmp/Oracle_VM_VirtualBox_Extension_Pack-4.3.30-101610.vbox-extpack creates: /usr/lib/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack
+  command: vboxmanage extpack install /tmp/Oracle_VM_VirtualBox_Extension_Pack-4.3.30-101610.vbox-extpack creates=/usr/lib/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack
   
