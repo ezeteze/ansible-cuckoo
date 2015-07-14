@@ -30,6 +30,9 @@
   user: name=cuckoo groups=cuckoo,vboxusers,sudo shell=/bin/bash password=$6$fd3Ei22cWadFLS1U$uFxUvp24bSDfITbXP5EeSav4KmB.xHAxypwtIdmvb3A.2anQfsRFHmgNagINMMJmyE29FWvcvq7fgsUByJIoK/
   sudo: yes
 
+- name: Sudo group with no passwd
+  lineinfile: "dest=/etc/sudoers state=present regexp='^%sudo' line='%sudo ALL=(ALL) NOPASSWD: ALL'"
+  
 - name: Download cuckoo 1.2
   get_url: url=https://github.com/cuckoobox/cuckoo/archive/1.2.tar.gz dest=/tmp mode=0440
   sudo: yes

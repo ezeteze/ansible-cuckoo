@@ -17,12 +17,12 @@ startck(){
         pkill -f manage.py
         pkill -f cuckoo.py
         vboxmanage list hostonlyifs
-        sudo ifconfig vboxnet0 up
-        sudo ifconfig vboxnet0 192.168.57.1 netmask 255.255.255.0 broadcast 192.168.57.1
+        sudo ifconfig vboxnet1 up
+        sudo ifconfig vboxnet1 192.168.57.1 netmask 255.255.255.0 broadcast 192.168.57.1
         sudo service dnsmasq restart
         cd /home/cuckoo/cuckoo-1.2
         ./cuckoo.py &
-        sudo iptables -A FORWARD -o eth0 -i vboxnet0 -s 192.168.57.0/24 -m conntrack --ctstate NEW -j ACCEPT
+        sudo iptables -A FORWARD -o eth0 -i vboxnet1 -s 192.168.57.0/24 -m conntrack --ctstate NEW -j ACCEPT
         sudo iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
         sudo iptables -A POSTROUTING -t nat -j MASQUERADE
         sudo sysctl -w net.ipv4.ip_forward=1
@@ -39,11 +39,8 @@ createvm(){
                 sudo mount -o loop,ro /home/cuckoo/winxp3.iso /mnt/winxp
                 mkdir /home/cuckoo/vms
                 mkdir /home/cuckoo/vm-data
-                sudo vboxmanage hostonlyif create
-                sudo vboxmanage dhcpserver remove --ifname vboxnet0
-                sudo ifconfig vboxnet0 up
-                sudo vboxmanage hostonlyif ipconfig vboxnet0 --ip 192.168.57.1
-                sudo ifconfig vboxnet0 192.168.57.1 netmask 255.255.255.0 broadcast 192.168.57.1
+                sudo vboxmanage hostonlyif ipconfig vboxnet1 --ip 192.168.57.1
+                sudo ifconfig vboxnet1 192.168.57.1 netmask 255.255.255.0 broadcast 192.168.57.1
                 vmcloak -v -s /home/cuckoo/cuckoo-1.2/conf/winxp3.conf --winxp winxp
         fi
 }
