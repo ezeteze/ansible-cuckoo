@@ -1,0 +1,14 @@
+---
+galaxy_info:
+  author: "Christos Sidiropoulos"
+  description: Installs Cuckoo Sandbox.
+  company: ENISA
+  license: license (BSD)
+  min_ansible_version: 1.5
+  platforms:
+  - name: Ubuntu
+    versions:
+    - precise
+    - trusty
+  categories: []
+dependencies: []
