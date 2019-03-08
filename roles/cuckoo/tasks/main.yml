@@ -1,53 +1,83 @@
 ---
 
 - name: Install requirements from apt
-  apt: pkg={{ item }} state=latest
-  with_items: apt_requirements
-  sudo: yes
+  apt:
+    pkg: "{{ apt_requirements }}"
+    state: latest
+  become: true
 
 - name: Install requirements from pip
-  pip: name={{ item }}
-  with_items: pip_requirements
-  sudo: yes
+  pip:
+    name: "{{ pip_requirements }}"
+  become: true
 
 - name: Do the thing
   script: thing.sh
-  sudo: yes
+  become: true
 
 - name: Install yara v3.3.0
   script: yara.sh
-  sudo: yes 
+  become: true
 
-- name: Install volatility 
+- name: Install volatility
   script: volatility.sh
-  sudo: yes
+  become: true
 
 - name: Create cuckoo group
-  group: name=cuckoo
-  sudo: yes
+  group:
+    name: cuckoo
+  become: true
 
 - name: Create cuckoo user
-  user: name=cuckoo groups=cuckoo,vboxusers,sudo shell=/bin/bash password=$6$fd3Ei22cWadFLS1U$uFxUvp24bSDfITbXP5EeSav4KmB.xHAxypwtIdmvb3A.2anQfsRFHmgNagINMMJmyE29FWvcvq7fgsUByJIoK/
-  sudo: yes
+  user:
+    name: cuckoo
+    groups: cuckoo, vboxusers, sudo
+    shell: /bin/bash
+    password: $6$fd3Ei22cWadFLS1U$uFxUvp24bSDfITbXP5EeSav4KmB.xHAxypwtIdmvb3A.2anQfsRFHmgNagINMMJmyE29FWvcvq7fgsUByJIoK/
 
 - name: Sudo group with no passwd
   lineinfile: "dest=/etc/sudoers state=present regexp='^%sudo' line='%sudo ALL=(ALL) NOPASSWD: ALL'"
-  
+
 - name: Download cuckoo 1.2
-  get_url: url=https://github.com/cuckoobox/cuckoo/archive/1.2.tar.gz dest=/tmp mode=0440
-  sudo: yes
+  get_url:
+    url: https://github.com/cuckoobox/cuckoo/archive/1.2.tar.gz
+    dest: /tmp
+    mode: 0440
+  become: true
 
 - name: Extract cuckoo
-  unarchive: src=/tmp/cuckoo-1.2.tar.gz dest=/home/cuckoo copy=no
-  sudo: yes
+  unarchive:
+    src: /tmp/cuckoo-1.2.tar.gz
+    dest: /home/cuckoo
+    copy: no
+  become: true
 
 - name: Copy configuration
-  copy: src={{ item }} dest=/home/cuckoo/cuckoo-1.2/conf/{{ item }} owner=cuckoo group=cuckoo mode=0644
-  with_items: conf_files
+  copy:
+    src: "{{ conf_file }}"
+    dest: /home/cuckoo/cuckoo-1.2/conf/"{{ conf_file }}"
+    owner: cuckoo
+    group: cuckoo
+    mode: 0644
+  loop: "{{ conf_files }}"
+  loop_control:
+    loop_var: conf_file
+
 
 - name: Copy cuckoo start script to /usr/local/bin
-  copy: src=cuckoo dest=/usr/local/bin/ owner=root group=root mode=0755
+  copy:
+    src: cuckoo
+    dest: /usr/local/bin/
+    owner: root
+    group: root
+    mode: 0755
 
 - name: Give proper permissions
-  file: path=/home/cuckoo/cuckoo-1.2 state=directory recurse=yes owner=cuckoo group=cuckoo
-  sudo: yes
+  file:
+    path: /home/cuckoo/cuckoo-1.2
+    state: directory
+    recurse: yes
+    owner: cuckoo
+    group: cuckoo
+  become: true
+
